@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Q_StateOnline.Core.Contracts;
 using Q_StateOnline.Core.Models;
+using Q_StateOnline.Core.Viewmodels;
 using Q_StateOnline.DataAccess.InMemory;
 
 namespace Q_StateOnline.UI.Controllers
@@ -13,14 +14,13 @@ namespace Q_StateOnline.UI.Controllers
     {
         IRepository<Product> context;
         IRepository<ProductCategory> productCategories;
-        public ProductController()
+        public ProductController(IRepository<Product> productContext, IRepository<ProductCategory> categoryContext)
         {
-            ProductRepository context;
 
-            public ProductController()
-            {
-                context = new ProductRepository();
-            }
+            context = productContext;
+            productCategories = categoryContext;
+
+            
 
         }
         // GET: Product
@@ -61,7 +61,7 @@ namespace Q_StateOnline.UI.Controllers
             {
                 ProductVM viewModel = new ProductVM();
                 viewModel.Product = product;
-                viewModel.Productcategories = productCategories.Collection();
+                viewModel.ProductCategories = productCategories.Collection();
                 return View(product);
             }
         }
@@ -92,6 +92,10 @@ namespace Q_StateOnline.UI.Controllers
         {
             Product productToDelete = context.Find(Id);
             if(productToDelete == null)
+            {
+                return HttpNotFound();
+            }
+            else
             {
                 return View(productToDelete);
             }
